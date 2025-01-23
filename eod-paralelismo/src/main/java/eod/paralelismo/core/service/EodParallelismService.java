@@ -42,15 +42,14 @@ public class EodParallelismService {
         }
         var pacts = getPacts();
         int totalPacts = pacts.size();
-        var rand  = new Random();
-
+        
         pacts.forEach(pact -> {
-            Integer partitionPosition = 0;//rand.nextInt(3);
+            String key = pact.getId().toString();
             pact.setProcessCommand(ProcessCommand.VALORIZA_PACTO);
             pact.setStatus(StatusProccess.PROCESSING);
             pact.setQuantityToBeProcessed(totalPacts);
             pactRepository.save(pact);
-            producer.sendEvent(executionEntityTopic, partitionPosition, null, jsonUtil.toJson(pact));
+            producer.sendEvent(executionEntityTopic, key, jsonUtil.toJson(pact));
         });
     }
 

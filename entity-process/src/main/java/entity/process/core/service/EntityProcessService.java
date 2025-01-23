@@ -31,12 +31,11 @@ public class EntityProcessService {
     public void process(PactDTO pact) throws InterruptedException {
         if(StatusProcess.PROCESSING.equals(pact.getStatus())) {
             int port = webServerAppContext.getWebServer().getPort();
-            var rand  = new Random();
-            int partitionPosition = 0; //rand.nextInt(3);
+            String key = pact.getId().toString();
             Thread.sleep(2000);
             System.out.println("Fim do processamento fake do pacto: " + pact.getId() + " rodando na server port: " + port);
             pact.setStatus(StatusProcess.SUCCESS);
-            entityProcessProducer.sendEvent(executionEntityTopic, partitionPosition, null, jsonUtil.toJson(pact));
+            entityProcessProducer.sendEvent(executionEntityTopic, key, jsonUtil.toJson(pact));
         }
     }
 

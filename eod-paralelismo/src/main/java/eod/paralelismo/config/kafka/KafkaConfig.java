@@ -88,6 +88,6 @@ public class KafkaConfig {
 
     @Bean
     public NewTopic startExecutionEntityTopic() {
-        return buildTopic(executionEntityTopic, 1, 1);
-    } //3
+        return buildTopic(executionEntityTopic, 3, 1);
+    }
 }
