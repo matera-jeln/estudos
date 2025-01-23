@@ -1,0 +1,21 @@
+server:
+  port: 8889
+
+spring:
+  application:
+    name: entity-process
+  kafka:
+    bootstrap-servers: localhost:9092
+    topic:
+      execution-entity-topic: execution-entity-topic
+    consumer:
+      properties:
+        allow.auto.create.topics: false
+      group-id: eod-parallelism-group
+      auto-offset-reset: latest
+
+logging:
+  level:
+    org:
+      apache:
+        kafka: OFF

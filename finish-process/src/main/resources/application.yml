@@ -1,0 +1,21 @@
+server:
+  port: 8880
+spring:
+  application:
+    name: finish-process
+  kafka:
+    bootstrap-servers: localhost:9092
+    topic:
+      execution-process-topic: execution-process-topic
+      execution-entity-topic: execution-entity-topic
+    consumer:
+      group-id: eod-notify-group
+      auto-offset-reset: latest
+      properties:
+        allow.auto.create.topics: false
+
+logging:
+  level:
+    org:
+      apache:
+        kafka: OFF
