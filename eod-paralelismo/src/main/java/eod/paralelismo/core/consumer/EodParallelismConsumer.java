@@ -23,7 +23,11 @@ public class EodParallelismConsumer {
     )
     public void consumerExecutionProcessTopic(String payload) {
         var command = jsonUtil.toObject(payload, ProcessCommandRecord.class);
-        parallelismService.sendEntityExecutionCommand(command);
+        try {
+            parallelismService.sendEntityExecutionCommand(command);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 
 }

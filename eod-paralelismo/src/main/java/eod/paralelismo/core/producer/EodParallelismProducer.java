@@ -13,11 +13,7 @@ public class EodParallelismProducer {
     }
 
     public void sendEvent(String topic, String key, String payload) {
-        try {
-            kafkaTemplate.send(topic,key, payload);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
+        kafkaTemplate.send(topic,key, payload);
     }
 
     public void sendEvent(String topic, String payload) {

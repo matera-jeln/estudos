@@ -20,11 +20,13 @@ spring:
     topic:
       execution-process-topic: execution-process-topic
       execution-entity-topic: execution-entity-topic
+    producer:
+      transaction-id-prefix: transactional-producer-id
     consumer:
+      group-id: eod-parallelism-group
       properties:
         allow.auto.create.topics: false
-      group-id: eod-parallelism-group
-      auto-offset-reset: latest
+      auto-offset-reset: earliest
 
 logging:
   level:

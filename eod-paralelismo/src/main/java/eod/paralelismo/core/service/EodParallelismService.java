@@ -36,19 +36,21 @@ public class EodParallelismService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
+    @Transactional("transactionManager")
     public void sendEntityExecutionCommand(ProcessCommandRecord command) {
         if (command == null || !ProcessCommand.VALORIZA_PACTO.toString().equals(command.processName())) {
             return;
         }
         var pacts = getPacts();
         int totalPacts = pacts.size();
-        
         pacts.forEach(pact -> {
             String key = pact.getId().toString();
             pact.setProcessCommand(ProcessCommand.VALORIZA_PACTO);
             pact.setStatus(StatusProccess.PROCESSING);
             pact.setQuantityToBeProcessed(totalPacts);
-            pactRepository.save(pact);
+            if(pact.getId() == 10) {
+                throw  new RuntimeException("erro ao processar pacto: " + pact.getId());
+            }
             producer.sendEvent(executionEntityTopic, key, jsonUtil.toJson(pact));
         });
     }

@@ -65,12 +65,20 @@ public class KafkaConfig {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, "transactional-producer");
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);//sem  auto commit
         return props;
     }
 
     @Bean
     public KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
+    }
+
+    @Bean(name = "transactionManager")
+    public KafkaTransactionManager<String, String> kafkaTransactionManager(
+            ProducerFactory<String, String> producerFactory) {
+        return new KafkaTransactionManager<>(producerFactory);
     }
 
     private NewTopic buildTopic(String name, Integer partitions, Integer replics) {
