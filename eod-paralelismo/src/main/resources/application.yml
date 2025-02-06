@@ -22,6 +22,8 @@ spring:
       execution-entity-topic: execution-entity-topic
     producer:
       transaction-id-prefix: transactional-producer-id
+      properties:
+        enable.idempotence: true
     consumer:
       group-id: eod-parallelism-group
       properties:

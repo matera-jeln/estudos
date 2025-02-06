@@ -48,9 +48,7 @@ public class EodParallelismService {
             pact.setProcessCommand(ProcessCommand.VALORIZA_PACTO);
             pact.setStatus(StatusProccess.PROCESSING);
             pact.setQuantityToBeProcessed(totalPacts);
-            if(pact.getId() == 10) {
-                throw  new RuntimeException("erro ao processar pacto: " + pact.getId());
-            }
+            exception(pact);
             producer.sendEvent(executionEntityTopic, key, jsonUtil.toJson(pact));
         });
     }
@@ -59,4 +57,9 @@ public class EodParallelismService {
         return pactRepository.findAll();
     }
 
+    public void exception(Pact pact){
+        if(pact.getId() == 10){
+            throw  new RuntimeException("erro ao processar pacto: " + pact.getId());
+        }
+    }
 }
