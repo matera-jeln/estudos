@@ -4,19 +4,16 @@ import entity.process.core.dto.PactDTO;
 
 import entity.process.core.service.EntityProcessService;
 import entity.process.core.util.JsonUtil;
+import lombok.AllArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor
 public class EntityProcessConsumer {
 
     private final JsonUtil jsonUtil;
     private final EntityProcessService entityProcessService;
-
-    public EntityProcessConsumer(JsonUtil jsonUtil, EntityProcessService entityProcessService) {
-        this.jsonUtil = jsonUtil;
-        this.entityProcessService = entityProcessService;
-    }
 
     @KafkaListener(
             groupId = "${spring.kafka.consumer.group-id}",

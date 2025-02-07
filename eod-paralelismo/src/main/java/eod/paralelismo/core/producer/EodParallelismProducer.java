@@ -1,16 +1,14 @@
 package eod.paralelismo.core.producer;
 
+import lombok.AllArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor
 public class EodParallelismProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
-
-    public EodParallelismProducer(KafkaTemplate<String, String> kafkaTemplate) {
-        this.kafkaTemplate = kafkaTemplate;
-    }
 
     public void sendEvent(String topic, String key, String payload) {
         kafkaTemplate.send(topic,key, payload);

@@ -7,15 +7,17 @@ import eod.paralelismo.core.model.Pact;
 import eod.paralelismo.core.producer.EodParallelismProducer;
 import eod.paralelismo.core.repository.PactRepository;
 import eod.paralelismo.core.util.JsonUtil;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Random;
 
 @Service
+@RequiredArgsConstructor
 public class EodParallelismService {
 
     private final PactRepository pactRepository;
@@ -25,16 +27,6 @@ public class EodParallelismService {
 
     @Value("${spring.kafka.topic.execution-entity-topic}")
     private String executionEntityTopic;
-
-    public EodParallelismService(PactRepository pactRepository,
-                                 EodParallelismProducer producer,
-                                 JsonUtil jsonUtil,
-                                 KafkaTemplate<String, String> kafkaTemplate) {
-        this.pactRepository = pactRepository;
-        this.producer = producer;
-        this.jsonUtil = jsonUtil;
-        this.kafkaTemplate = kafkaTemplate;
-    }
 
     @Transactional("transactionManager")
     public void sendEntityExecutionCommand(ProcessCommandRecord command) {
@@ -48,7 +40,6 @@ public class EodParallelismService {
             pact.setProcessCommand(ProcessCommand.VALORIZA_PACTO);
             pact.setStatus(StatusProccess.PROCESSING);
             pact.setQuantityToBeProcessed(totalPacts);
-            exception(pact);
             producer.sendEvent(executionEntityTopic, key, jsonUtil.toJson(pact));
         });
     }

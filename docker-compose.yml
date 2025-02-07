@@ -26,27 +26,45 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:29092,EXTERNAL_PLAINTEXT://localhost:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,EXTERNAL_PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 2
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_MIN_INSYNC_REPLICAS: 2
     volumes:
-      - kafka_data:/var/lib/kafka/data
+      - kafka_data_1:/var/lib/kafka/data  # Volume dedicado para o kafka-1
+
+  kafka-2:
+    image: confluentinc/cp-kafka:7.8.0
+    container_name: kafka-2
+    depends_on:
+      - zookeeper
+    ports:
+      - "9093:9093"
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:29093,EXTERNAL_PLAINTEXT://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,EXTERNAL_PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 2
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+    volumes:
+      - kafka_data_2:/var/lib/kafka/data  # Volume dedicado para o kafka-2
 
   redpanda-console:
     container_name: redpanda-console
     image: docker.redpanda.com/vectorized/console:latest
     depends_on:
       - kafka-1
+      - kafka-2
     ports:
-      - "8081:8080"           
+      - "8081:8080"
     environment:
-      KAFKA_BROKERS: kafka-1:29092
-      #CONFIG_FILEPATH: /tmp/config.yml
-      entrypoint: /bin/sh
-      CONSOLE_CONFIG_FILE: |
-        kafka:
-          brokers: ["kafka-1:29092"] # Use the correct internal port
+      KAFKA_BROKERS: kafka-1:29092,kafka-2:29093  # Agora aponta para ambos os brokers
+    #entrypoint: /bin/sh
+    #command: ["./bin/redpanda-console", "--config", "/tmp/config.yml"]
 
   postgres-eod-parallelism:
     container_name: postgres-eod-parallelism
@@ -69,5 +87,6 @@ services:
 volumes:
   zookeeper_data:
   zookeeper_datalog:
-  kafka_data:
+  kafka_data_1:  # Volume dedicado para o kafka-1
+  kafka_data_2:  # Volume dedicado para o kafka-2
   postgres_data:

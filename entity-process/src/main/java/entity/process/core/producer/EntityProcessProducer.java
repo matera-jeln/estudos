@@ -1,16 +1,14 @@
 package entity.process.core.producer;
 
+import lombok.AllArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor
 public class EntityProcessProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
-
-    public EntityProcessProducer(KafkaTemplate<String, String> kafkaTemplate) {
-        this.kafkaTemplate = kafkaTemplate;
-    }
 
     public void sendEvent(String topic, String key, String payload) {
         try {

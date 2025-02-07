@@ -1,16 +1,14 @@
 package entity.process.core.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor
 public class JsonUtil {
 
     private final ObjectMapper objectMapper;
-
-    public JsonUtil(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
 
     public String toJson(Object object) {
         try {
